@@ -205,7 +205,7 @@ async function sendForm(ok) {
   btn.disabled = true;
   ok.textContent = "Odesílám…";
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 15000);
+  const timer = setTimeout(() => ctrl.abort(), 30000);
   try {
     const res = await fetch(FORM_ENDPOINT, {
       method: "POST",
