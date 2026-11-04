@@ -3,129 +3,155 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>David Mráz | WebifyCz – webové stránky pro malé firmy</title>
-  <meta name="description" content="Portfolio webdesignéra a vývojáře. Weby pro malé firmy v HTML, CSS a JavaScriptu.">
-  <meta name="theme-color" content="#2646d9">
+  <title>David Mráz | WebifyCz – weby pro malé firmy</title>
+  <meta name="description" content="Dělám weby a e-shopy pro malé firmy. Navrhuju ve Figmě, programuju v HTML, CSS a JavaScriptu.">
+  <meta name="theme-color" content="#0a0a0c">
   <meta property="og:title" content="David Mráz | WebifyCz">
-  <meta property="og:description" content="Weby pro malé firmy v HTML, CSS a JavaScriptu.">
-  <meta property="og:type" content="website">
+  <meta property="og:description" content="Weby a e-shopy pro malé firmy.">
   <meta property="og:image" content="logo.png">
   <link rel="icon" type="image/png" href="favicon.png">
   <link rel="apple-touch-icon" href="icon-128.png">
   <script>
-    (function () {
-      try {
-        var t = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-        document.documentElement.dataset.theme = t;
-      } catch (e) {}
-    })();
+    try {
+      var t = localStorage.getItem("theme") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.dataset.theme = t;
+    } catch (e) {}
   </script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=Figtree:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <a class="skip" href="#obsah">Přeskočit na obsah</a>
 
-  <header class="site-header">
+  <header class="top">
     <a class="brand" href="#uvod" aria-label="WebifyCz – úvod">
-      <img class="mark mark-on-light" src="mark-on-light.png" alt="" width="40" height="27">
-      <img class="mark mark-on-dark" src="mark-on-dark.png" alt="" width="40" height="27">
+      <img class="on-light" src="mark-on-light.png" alt="" width="40" height="27">
+      <img class="on-dark" src="mark-on-dark.png" alt="" width="40" height="27">
       <span>webify<b>cz</b></span>
     </a>
     <button class="nav-toggle" aria-expanded="false" aria-controls="nav" aria-label="Otevřít menu">
       <span></span><span></span><span></span>
     </button>
     <nav id="nav" class="nav" aria-label="Hlavní navigace">
-      <a href="#projekty">Projekty</a>
-      <a href="#dovednosti">Dovednosti</a>
-      <a href="#o-mne">O mně</a>
-      <a href="#kontakt">Kontakt</a>
+      <a href="#projekty"><i>01</i>Projekty</a>
+      <a href="#dovednosti"><i>02</i>Dovednosti</a>
+      <a href="#o-mne"><i>03</i>O mně</a>
+      <a href="#kontakt"><i>04</i>Kontakt</a>
       <button class="theme-toggle" type="button" aria-label="Přepnout tmavý a světlý režim">Tmavý režim</button>
     </nav>
   </header>
 
   <main id="obsah">
-    <div class="hero-wrap">
     <section id="uvod" class="hero">
-      <div class="hero-text">
-        <img class="hero-mark" src="mark-big-on-light.png" alt="Logo WebifyCz" width="120" height="81">
-        <img class="hero-mark hero-mark-dark" src="mark-big-on-dark.png" alt="" width="120" height="81" aria-hidden="true">
-        <h1>Weby pro malé firmy, které fungují na každém displeji.</h1>
-        <p class="lead">Jsem David Mráz. Navrhuji a programuji weby pro firmy a služby: od jedné stránky po rezervační systém s administrací.</p>
-        <p class="actions">
-          <a class="btn" href="#projekty">Prohlédnout projekty</a>
-          <a class="btn btn-ghost" href="#kontakt">Napsat mi</a>
-        </p>
-      </div>
-
-      <div class="demo" aria-labelledby="demo-title">
-        <div class="demo-bar">
-          <p id="demo-title">Vyzkoušejte si responzivitu</p>
-          <div class="switch" role="group" aria-label="Velikost náhledu">
-            <button type="button" data-size="desktop" aria-pressed="true">Počítač</button>
-            <button type="button" data-size="tablet" aria-pressed="false">Tablet</button>
-            <button type="button" data-size="mobile" aria-pressed="false">Mobil</button>
-          </div>
+      <div class="hero-grid">
+        <div class="hero-copy">
+          <img class="hero-mark on-light" src="mark-big-on-light.png" alt="Logo WebifyCz" width="96" height="65">
+          <img class="hero-mark on-dark" src="mark-big-on-dark.png" alt="" width="96" height="65">
+          <p class="mono">Webdesign a front-end vývoj</p>
+          <h1>Weby pro malé firmy. Rychlé, čisté a na <mark>každém displeji.</mark></h1>
+          <p class="lead">Jsem David Mráz. Navrhnu a naprogramuju web od jedné stránky po e-shop s administrací. Bez šablon a bez zbytečných frameworků.</p>
+          <p class="actions">
+            <a class="btn" href="#projekty">Moje práce</a>
+            <a class="btn btn-ghost" href="#kontakt">Napsat mi</a>
+          </p>
         </div>
-        <div class="stage">
-          <div class="frame" id="frame" data-size="desktop">
-            <div class="mini">
-              <div class="mini-bar"><i></i><i></i><i></i><span>webifycz.cz</span></div>
-              <div class="mini-hero"></div>
-              <div class="mini-grid"><i></i><i></i><i></i></div>
+
+        <div class="demo" aria-labelledby="demo-title">
+          <div class="demo-bar">
+            <p id="demo-title" class="mono">Vyzkoušej responzivitu</p>
+            <div class="switch" role="group" aria-label="Velikost náhledu">
+              <button type="button" data-size="desktop" aria-pressed="true">Počítač</button>
+              <button type="button" data-size="tablet" aria-pressed="false">Tablet</button>
+              <button type="button" data-size="mobile" aria-pressed="false">Mobil</button>
+            </div>
+          </div>
+          <div class="stage">
+            <div class="frame" id="frame" data-size="desktop">
+              <div class="mini">
+                <div class="mini-bar"><i></i><i></i><i></i><span>webifycz.cz</span></div>
+                <div class="mini-hero"></div>
+                <div class="mini-grid"><i></i><i></i><i></i></div>
+              </div>
             </div>
           </div>
         </div>
       </div>
+
+      <dl class="stats">
+        <div><dd data-count="6">6</dd><dt>realizovaných webů</dt></div>
+        <div><dd data-count="2">2</dd><dt>e-shopy</dt></div>
+        <div><dd data-count="3">3</dd><dt>jazyky na jednom webu</dt></div>
+        <div><dd data-count="0">0</dd><dt>frameworků v kódu</dt></div>
+      </dl>
     </section>
-    </div>
 
     <section id="projekty" class="section">
-      <h2>Projekty</h2>
-      <p class="intro">Weby a e-shopy, které jsem vytvořil pro malé firmy a služby. U každého je náhled, popis a odkaz na živý web.</p>
+      <header class="head">
+        <p class="mono">01</p>
+        <h2>Projekty</h2>
+        <p class="intro">Weby a e-shopy pro malé firmy. U každého je náhled, krátký popis a odkaz na živý web.</p>
+      </header>
       <div class="filters" role="group" aria-label="Filtr projektů"></div>
       <ul class="cards" id="cards"></ul>
     </section>
 
-    <section id="dovednosti" class="section band">
-      <h2>Dovednosti</h2>
+    <section id="dovednosti" class="section">
+      <header class="head">
+        <p class="mono">02</p>
+        <h2>Dovednosti</h2>
+      </header>
       <div class="skills">
         <article>
           <h3>Front-end</h3>
-          <p>Sémantické HTML5, CSS3 (Flexbox, Grid, media queries, animace) a vanilla JavaScript v ES6+.</p>
+          <ul><li>Sémantické HTML5</li><li>CSS Grid a Flexbox</li><li>JavaScript ES6+</li></ul>
         </article>
         <article>
           <h3>Back-end a data</h3>
-          <p>PHP pro administraci a ukládání dat, napojení na Google Sheets, rezervační formuláře.</p>
+          <ul><li>PHP a administrace</li><li>Google Sheets</li><li>Rezervační formuláře</li></ul>
         </article>
         <article>
           <h3>Návrh</h3>
-          <p>Wireframy a prototypy ve Figmě, typografie, barevné systémy a přístupnost.</p>
+          <ul><li>Wireframy ve Figmě</li><li>Typografie a barvy</li><li>Přístupnost</li></ul>
         </article>
         <article>
           <h3>Nasazení</h3>
-          <p>Git a GitHub, hosting, GitHub Pages, Netlify a Vercel.</p>
+          <ul><li>Git a GitHub</li><li>GitHub Pages, Netlify</li><li>Doména a hosting</li></ul>
         </article>
       </div>
     </section>
 
     <section id="o-mne" class="section about">
-      <div>
+      <header class="head">
+        <p class="mono">03</p>
         <h2>O mně</h2>
-        <img class="about-mark" src="mark-big-on-light.png" alt="" width="150" height="101">
-        <img class="about-mark about-mark-dark" src="mark-big-on-dark.png" alt="" width="150" height="101">
-      </div>
+        <img class="about-mark on-light" src="mark-big-on-light.png" alt="" width="180" height="121">
+        <img class="about-mark on-dark" src="mark-big-on-dark.png" alt="" width="180" height="121">
+      </header>
       <div>
-        <p>Programuji weby pro malé firmy a živnostníky. Pracuji ručně, bez zbytečných frameworků, aby byl kód čitelný a web rychlý.</p>
-        <p>Každý projekt začínám otázkou, co má návštěvník na webu udělat: zavolat, objednat se, spočítat cenu nebo si rezervovat termín. Podle toho navrhuji strukturu i vzhled.</p>
+        <p class="big">Dělám weby pro malé firmy a živnostníky. Píšu je ručně, aby byl kód čitelný a web rychlý.</p>
+        <ol class="steps">
+          <li><b>Zadání</b><span>Nejdřív zjistím, co má návštěvník na webu udělat: zavolat, objednat se, spočítat cenu nebo si rezervovat termín.</span></li>
+          <li><b>Návrh</b><span>Ve Figmě nakreslím wireframy a prototyp, abychom se shodli na vzhledu dřív, než začnu programovat.</span></li>
+          <li><b>Kód</b><span>HTML, CSS a JavaScript bez frameworků. Web se přizpůsobí mobilu, tabletu i počítači.</span></li>
+          <li><b>Nasazení</b><span>Kód uložím na GitHub, web nasadím na hosting a předám vám ho funkční.</span></li>
+        </ol>
       </div>
     </section>
 
-    <section id="kontakt" class="section">
-      <h2>Kontakt</h2>
-      <p class="intro">Napište, co potřebujete. Ozvu se vám co nejdřív.</p>
+    <section id="kontakt" class="section contact">
+      <header class="head">
+        <p class="mono">04</p>
+        <h2>Kontakt</h2>
+        <p class="intro">Napište, co potřebujete. Ozvu se vám co nejdřív.</p>
+        <a class="mail" href="mailto:webify@seznam.cz">webify@seznam.cz</a>
+        <p class="mono ico">David Mráz · IČO 29893810</p>
+        <p class="social">
+          <a href="https://www.instagram.com/webifycz/" target="_blank" rel="noopener">Instagram ↗</a>
+          <a href="https://www.tiktok.com/@webifycz" target="_blank" rel="noopener">TikTok ↗</a>
+        </p>
+      </header>
       <form id="form" novalidate>
         <p class="trap" aria-hidden="true"><label>Nevyplňovat: <input name="_honey" tabindex="-1" autocomplete="off"></label></p>
         <div class="field">
@@ -143,24 +169,28 @@
           <textarea id="msg" name="msg" rows="5" required minlength="10"></textarea>
           <p class="error" id="msg-err" role="alert"></p>
         </div>
-        <button class="btn" type="submit">Odeslat zprávu</button>
+        <button class="btn" type="submit">Odeslat zprávu →</button>
         <p class="ok" id="ok" role="status"></p>
       </form>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <p><img class="foot-mark" src="mark-on-light.png" alt="" width="30" height="20"><img class="foot-mark foot-mark-dark" src="mark-on-dark.png" alt="" width="30" height="20"> © <span id="year">2026</span> David Mráz | WebifyCz</p>
-    <a href="#uvod">Nahoru</a>
+  <footer class="foot">
+    <p><img class="on-light" src="mark-on-light.png" alt="" width="30" height="20"><img class="on-dark" src="mark-on-dark.png" alt="" width="30" height="20">© <span id="year">2026</span> David Mráz | WebifyCz · IČO 29893810</p>
+    <p class="foot-links">
+      <a href="https://www.instagram.com/webifycz/" target="_blank" rel="noopener">Instagram</a>
+      <a href="https://www.tiktok.com/@webifycz" target="_blank" rel="noopener">TikTok</a>
+      <a href="#uvod">Nahoru ↑</a>
+    </p>
   </footer>
 
   <dialog id="modal" aria-labelledby="m-title">
     <button class="close" type="button" aria-label="Zavřít">×</button>
+    <p id="m-cat" class="mono"></p>
     <h3 id="m-title"></h3>
-    <p id="m-cat" class="m-cat"></p>
     <p id="m-text"></p>
     <ul id="m-list"></ul>
-    <p><a id="m-link" class="btn" href="#" target="_blank" rel="noopener" hidden>Otevřít živou ukázku</a></p>
+    <p><a id="m-link" class="btn" href="#" target="_blank" rel="noopener" hidden>Otevřít web ↗</a></p>
   </dialog>
 
   <script src="script.js" defer></script>
