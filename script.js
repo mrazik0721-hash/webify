@@ -196,34 +196,31 @@ const ACCESS_KEY = "a4187bdd-0956-4526-80cc-28d48bf734e4";
 const MAIL = "webify@seznam.cz";
 
 function mailFallback(data) {
-  const body = encodeURIComponent(`${data.msg}\n\n${data.name} (${data.email})`);
+  const body = encodeURIComponent(`${data.message}\n\n${data.name} (${data.email})`);
   return `mailto:${MAIL}?subject=${encodeURIComponent("Zpráva z webu WebifyCz")}&body=${body}`;
 }
 
 async function sendForm(ok) {
   const btn = $("button[type=submit]", form);
-  const data = Object.fromEntries(new FormData(form));
+  const raw = Object.fromEntries(new FormData(form));
+  const data = { name: raw.name, email: raw.email, message: raw.msg };
+  if (raw.botcheck) {
+    ok.textContent = "Díky, zpráva je odeslaná.";
+    return;
+  }
   btn.disabled = true;
   ok.textContent = "Odesílám…";
   const ctrl = new AbortController();
-  const timer = setTimeout(() => ctrl.abort(), 30000);
+  const timer = setTimeout(() => ctrl.abort(), 20000);
   try {
-    const { msg, botcheck, ...rest } = data;
     const res = await fetch(FORM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({
-        ...rest,
-        message: msg,
-        botcheck: botcheck || "",
-        access_key: ACCESS_KEY,
-        subject: "Nová zpráva z webu WebifyCz od: " + data.name,
-        from_name: "Web WebifyCz",
-      }),
+      body: JSON.stringify({ ...data, access_key: ACCESS_KEY, subject: "Nová zpráva z webu WebifyCz od: " + data.name, from_name: "Web WebifyCz" }),
       signal: ctrl.signal,
     });
     const json = await res.json();
-    if (!res.ok || json.success !== true) throw new Error(json.message || res.status);
+    if (!res.ok || !json.success) throw new Error(json.message || res.status);
     ok.textContent = "Díky, zpráva je odeslaná. Ozvu se vám co nejdřív.";
     form.reset();
     fields.forEach((f) => f.setAttribute("aria-invalid", "false"));

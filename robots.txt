@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://mrazik0721-hash.github.io/webify/sitemap.xml
