@@ -1,0 +1,287 @@
+"use strict";
+
+/* ============================================================
+   Data projektů – karty se vykreslují dynamicky z tohoto pole.
+   Odkazy na živé ukázky doplňte do pole "url" (volitelné).
+   ============================================================ */
+const PROJECTS = [
+  {
+    title: "Krok ven",
+    category: "E-shop a administrace",
+    summary: "Firemní web propojený s e-shopem a vlastní administrací.",
+    features: ["Firemní web", "E-shop na platformě Shoptet", "Administrace"],
+    url: "https://krok-ven.cz/",
+    links: [{ label: "E-shop", url: "https://821001.myshoptet.com/" }],
+  },
+  {
+    title: "Štěpánek autoservis",
+    category: "Firemní web",
+    summary: "Web karosářství, autoservisu a pneuservisu.",
+    features: ["Galerie zakázek s posuvníkem před/po", "Formulář pro poptávku"],
+    url: "https://karosarstvistepanekpneuservis.cz/",
+  },
+  {
+    title: "MeLoan Credit",
+    category: "Firemní web",
+    summary: "Web finanční společnosti s administrací.",
+    features: ["Veřejný web", "Administrace"],
+    url: "https://www.meloancredit.cz/",
+  },
+  {
+    title: "VextroBau",
+    category: "Firemní web",
+    summary: "Web servisní firmy ve třech jazycích.",
+    features: ["Čeština, němčina a angličtina", "Přepínání jazyků"],
+    url: "https://vextrobau.cz/",
+  },
+  {
+    title: "Fotbalové vybavení",
+    category: "E-shop a administrace",
+    summary: "E-shop s fotbalovým vybavením.",
+    features: ["Produktový katalog", "Objednávky online"],
+    url: "https://www.fotbalovey.shop/",
+  },
+  {
+    title: "AH terapie",
+    category: "Firemní web",
+    summary: "Prezentační web terapeutických služeb.",
+    features: ["Přehled služeb", "Kontakt"],
+    url: "https://www.ahterapie.cz/",
+  },
+];
+
+/* ---------- Pomocné funkce ---------- */
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+
+/* ============================================================
+   1) Přepínač světlého a tmavého režimu (localStorage)
+   ============================================================ */
+const themeBtn = $(".theme-toggle");
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeBtn.textContent = theme === "dark" ? "Světlý režim" : "Tmavý režim";
+}
+
+function initTheme() {
+  let saved = null;
+  try { saved = localStorage.getItem("theme"); } catch (e) { /* úložiště nemusí být dostupné */ }
+  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  applyTheme(saved || (prefersDark ? "dark" : "light"));
+}
+
+themeBtn.addEventListener("click", () => {
+  const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
+  applyTheme(next);
+  try { localStorage.setItem("theme", next); } catch (e) { /* ignorovat */ }
+});
+
+/* ============================================================
+   2) Hamburger menu na mobilu
+   ============================================================ */
+const navToggle = $(".nav-toggle");
+const nav = $("#nav");
+
+function setNav(open) {
+  nav.classList.toggle("open", open);
+  navToggle.setAttribute("aria-expanded", String(open));
+  navToggle.setAttribute("aria-label", open ? "Zavřít menu" : "Otevřít menu");
+}
+
+navToggle.addEventListener("click", () => setNav(!nav.classList.contains("open")));
+nav.addEventListener("click", (e) => { if (e.target.closest("a")) setNav(false); });
+document.addEventListener("keydown", (e) => { if (e.key === "Escape") setNav(false); });
+
+/* ============================================================
+   3) Zvýraznění aktivní sekce v menu při scrollování
+      (plynulé scrollování zajišťuje CSS scroll-behavior)
+   ============================================================ */
+const links = $$(".nav a");
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    links.forEach((a) => {
+      const on = a.getAttribute("href") === "#" + entry.target.id;
+      a.classList.toggle("active", on);
+      if (on) a.setAttribute("aria-current", "true"); else a.removeAttribute("aria-current");
+    });
+  });
+}, { rootMargin: "-40% 0px -55% 0px" });
+$$("main section[id]").forEach((s) => observer.observe(s));
+
+/* ============================================================
+   4) Demo responzivity – přepínání velikosti náhledu
+   ============================================================ */
+const frame = $("#frame");
+$$(".switch button").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    frame.dataset.size = btn.dataset.size;
+    $$(".switch button").forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+  });
+});
+
+/* ============================================================
+   5) Projekty: dynamické vykreslení, filtr a modální okno
+   ============================================================ */
+const cardsEl = $("#cards");
+const filtersEl = $(".filters");
+const modal = $("#modal");
+let activeCategory = "Vše";
+let lastFocus = null; // prvek, který otevřel modal (po zavření se na něj vrátí focus)
+
+function renderFilters() {
+  const categories = ["Vše", ...new Set(PROJECTS.map((p) => p.category))];
+  filtersEl.innerHTML = "";
+  categories.forEach((cat) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.textContent = cat;
+    btn.setAttribute("aria-pressed", String(cat === activeCategory));
+    btn.addEventListener("click", () => {
+      activeCategory = cat;
+      renderFilters();
+      renderCards();
+    });
+    filtersEl.append(btn);
+  });
+}
+
+/* Náhled webu: vlastní obrázek (p.img) nebo automatický snímek služby WordPress mShots */
+const previewSrc = (p) =>
+  p.img || `https://s.wordpress.com/mshots/v1/${encodeURIComponent(p.url)}?w=800&h=500`;
+
+function renderCards() {
+  cardsEl.innerHTML = "";
+  PROJECTS.filter((p) => activeCategory === "Vše" || p.category === activeCategory).forEach((p) => {
+    const li = document.createElement("li");
+    li.className = "card";
+    li.innerHTML = `
+      <a class="shot" target="_blank" rel="noopener"><img loading="lazy" width="800" height="500" alt=""></a>
+      <div class="card-body">
+        <span class="cat"></span>
+        <h3></h3>
+        <p class="sum"></p>
+        <div class="card-actions">
+          <a class="btn btn-sm visit" target="_blank" rel="noopener">Otevřít web</a>
+          <button class="btn btn-sm btn-ghost more" type="button">Detail</button>
+        </div>
+      </div>`;
+    const shot = $(".shot", li);
+    shot.href = p.url;
+    shot.setAttribute("aria-label", "Otevřít web " + p.title);
+    const img = $("img", li);
+    img.src = previewSrc(p);
+    img.alt = "Náhled webu " + p.title;
+    img.addEventListener("error", () => shot.classList.add("no-img")); // záložní vzhled bez obrázku
+    $(".cat", li).textContent = p.category;
+    $("h3", li).textContent = p.title;
+    $(".sum", li).textContent = p.summary;
+    $(".visit", li).href = p.url;
+    $(".more", li).addEventListener("click", () => openModal(p));
+    cardsEl.append(li);
+  });
+}
+
+function openModal(p) {
+  $("#m-title").textContent = p.title;
+  $("#m-cat").textContent = p.category;
+  $("#m-text").textContent = p.summary;
+  const list = $("#m-list");
+  list.innerHTML = "";
+  p.features.forEach((f) => {
+    const li = document.createElement("li");
+    li.textContent = f;
+    list.append(li);
+  });
+  const link = $("#m-link");
+  link.hidden = !p.url;
+  if (p.url) link.href = p.url;
+  // doplňkové odkazy (např. e-shop)
+  $$(".m-extra").forEach((e) => e.remove());
+  (p.links || []).forEach((l) => {
+    const a = document.createElement("a");
+    a.className = "btn btn-ghost m-extra";
+    a.href = l.url; a.target = "_blank"; a.rel = "noopener";
+    a.textContent = "Otevřít: " + l.label;
+    link.after(" ", a);
+  });
+  lastFocus = document.activeElement;
+  modal.showModal();
+}
+
+modal.addEventListener("close", () => lastFocus && lastFocus.focus());
+$(".close", modal).addEventListener("click", () => modal.close());
+// Kliknutí mimo obsah okna ho zavře
+modal.addEventListener("click", (e) => { if (e.target === modal) modal.close(); });
+
+/* ============================================================
+   6) Kontaktní formulář s validací
+   ============================================================ */
+const form = $("#form");
+const rules = {
+  name: (v) => (v.trim().length >= 2 ? "" : "Napište své jméno (alespoň 2 znaky)."),
+  email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? "" : "Zadejte e-mail ve tvaru jmeno@domena.cz."),
+  msg: (v) => (v.trim().length >= 10 ? "" : "Zpráva musí mít alespoň 10 znaků."),
+};
+
+function validateField(input) {
+  const message = rules[input.name](input.value);
+  $("#" + input.id + "-err").textContent = message;
+  input.setAttribute("aria-invalid", String(Boolean(message)));
+  return !message;
+}
+
+const fields = $$("input[id], textarea", form); // bez skrytého pole proti spamu
+fields.forEach((input) => {
+  input.addEventListener("blur", () => validateField(input));
+  input.addEventListener("input", () => { if (input.getAttribute("aria-invalid") === "true") validateField(input); });
+});
+
+form.addEventListener("submit", (e) => {
+  e.preventDefault();
+  const results = fields.map(validateField);
+  const ok = $("#ok");
+  if (results.includes(false)) {
+    ok.textContent = "";
+    fields[results.indexOf(false)].focus();
+    return;
+  }
+  sendForm(ok);
+});
+
+/* Odeslání e-mailu přes FormSubmit (fetch API) – zpráva dorazí na webify@seznam.cz.
+   Služba nepotřebuje vlastní server, takže funguje na GitHub Pages i Netlify. */
+const FORM_ENDPOINT = "https://formsubmit.co/ajax/webify@seznam.cz";
+
+async function sendForm(ok) {
+  const btn = $("button[type=submit]", form);
+  btn.disabled = true;
+  ok.textContent = "Odesílám…";
+  try {
+    const data = Object.fromEntries(new FormData(form));
+    data._subject = "Nová zpráva z webu WebifyCz od: " + data.name;
+    data._captcha = "false";
+    data._template = "table";
+    const res = await fetch(FORM_ENDPOINT, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", Accept: "application/json" },
+      body: JSON.stringify(data),
+    });
+    const json = await res.json();
+    if (!res.ok || String(json.success) !== "true") throw new Error(json.message || res.status);
+    ok.textContent = "Díky, zpráva byla odeslána. Ozvu se vám co nejdřív.";
+    form.reset();
+    fields.forEach((f) => f.setAttribute("aria-invalid", "false"));
+  } catch (err) {
+    ok.textContent = "Zprávu se nepodařilo odeslat. Zkuste to prosím znovu, nebo napište na webify@seznam.cz.";
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+/* ---------- Start ---------- */
+$("#year").textContent = new Date().getFullYear();
+initTheme();
+renderFilters();
+renderCards();
