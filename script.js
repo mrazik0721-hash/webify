@@ -192,28 +192,50 @@ form.addEventListener("submit", (e) => {
 });
 
 const FORM_ENDPOINT = "https://formsubmit.co/ajax/webify@seznam.cz";
+const MAIL = "webify@seznam.cz";
+
+function mailFallback(data) {
+  const body = encodeURIComponent(`${data.msg}\n\n${data.name} (${data.email})`);
+  return `mailto:${MAIL}?subject=${encodeURIComponent("Zpráva z webu WebifyCz")}&body=${body}`;
+}
+
 async function sendForm(ok) {
   const btn = $("button[type=submit]", form);
+  const data = Object.fromEntries(new FormData(form));
   btn.disabled = true;
   ok.textContent = "Odesílám…";
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 15000);
   try {
-    const data = Object.fromEntries(new FormData(form));
-    data._subject = "Nová zpráva z webu WebifyCz od: " + data.name;
-    data._captcha = "false";
-    data._template = "table";
     const res = await fetch(FORM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ ...data, _subject: "Nová zpráva z webu WebifyCz od: " + data.name, _captcha: "false", _template: "table" }),
+      signal: ctrl.signal,
     });
     const json = await res.json();
     if (!res.ok || String(json.success) !== "true") throw new Error(json.message || res.status);
-    ok.textContent = "Díky, zpráva je odeslaná. Ozvu se vám co nejdřív.";
-    form.reset();
-    fields.forEach((f) => f.setAttribute("aria-invalid", "false"));
+    if (/activat/i.test(json.message || "")) {
+      ok.textContent = "Skoro hotovo: na webify@seznam.cz přišel aktivační e-mail od FormSubmit. Potvrďte ho a pak zprávu pošlete znovu.";
+    } else {
+      ok.textContent = "Díky, zpráva je odeslaná. Ozvu se vám co nejdřív.";
+      form.reset();
+      fields.forEach((f) => f.setAttribute("aria-invalid", "false"));
+    }
   } catch (err) {
-    ok.textContent = "Zprávu se nepodařilo odeslat. Zkuste to prosím znovu, nebo napište na webify@seznam.cz.";
+    if (/activat/i.test(err.message)) {
+      ok.textContent = "Skoro hotovo: na webify@seznam.cz přišel aktivační e-mail od FormSubmit. Potvrďte ho a pak zprávu pošlete znovu.";
+      return;
+    }
+    console.warn("Formulář:", err.message);
+    ok.innerHTML = "";
+    ok.append("Zprávu se nepodařilo odeslat přes formulář. ");
+    const a = document.createElement("a");
+    a.href = mailFallback(data);
+    a.textContent = "Otevřít ji v e-mailovém programu";
+    ok.append(a, ".");
   } finally {
+    clearTimeout(timer);
     btn.disabled = false;
   }
 }
