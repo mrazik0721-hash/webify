@@ -191,7 +191,8 @@ form.addEventListener("submit", (e) => {
   sendForm($("#ok"));
 });
 
-const FORM_ENDPOINT = "https://formsubmit.co/ajax/webify@seznam.cz";
+const FORM_ENDPOINT = "https://api.web3forms.com/submit";
+const ACCESS_KEY = "a4187bdd-0956-4526-80cc-28d48bf734e4";
 const MAIL = "webify@seznam.cz";
 
 function mailFallback(data) {
@@ -207,26 +208,26 @@ async function sendForm(ok) {
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), 30000);
   try {
+    const { msg, botcheck, ...rest } = data;
     const res = await fetch(FORM_ENDPOINT, {
       method: "POST",
       headers: { "Content-Type": "application/json", Accept: "application/json" },
-      body: JSON.stringify({ ...data, _subject: "Nová zpráva z webu WebifyCz od: " + data.name, _captcha: "false", _template: "table" }),
+      body: JSON.stringify({
+        ...rest,
+        message: msg,
+        botcheck: botcheck || "",
+        access_key: ACCESS_KEY,
+        subject: "Nová zpráva z webu WebifyCz od: " + data.name,
+        from_name: "Web WebifyCz",
+      }),
       signal: ctrl.signal,
     });
     const json = await res.json();
-    if (!res.ok || String(json.success) !== "true") throw new Error(json.message || res.status);
-    if (/activat/i.test(json.message || "")) {
-      ok.textContent = "Skoro hotovo: na webify@seznam.cz přišel aktivační e-mail od FormSubmit. Potvrďte ho a pak zprávu pošlete znovu.";
-    } else {
-      ok.textContent = "Díky, zpráva je odeslaná. Ozvu se vám co nejdřív.";
-      form.reset();
-      fields.forEach((f) => f.setAttribute("aria-invalid", "false"));
-    }
+    if (!res.ok || json.success !== true) throw new Error(json.message || res.status);
+    ok.textContent = "Díky, zpráva je odeslaná. Ozvu se vám co nejdřív.";
+    form.reset();
+    fields.forEach((f) => f.setAttribute("aria-invalid", "false"));
   } catch (err) {
-    if (/activat/i.test(err.message)) {
-      ok.textContent = "Skoro hotovo: na webify@seznam.cz přišel aktivační e-mail od FormSubmit. Potvrďte ho a pak zprávu pošlete znovu.";
-      return;
-    }
     console.warn("Formulář:", err.message);
     ok.innerHTML = "";
     ok.append("Zprávu se nepodařilo odeslat přes formulář. ");
