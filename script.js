@@ -1,9 +1,5 @@
 "use strict";
 
-/* ============================================================
-   Data projektů – karty se vykreslují dynamicky z tohoto pole.
-   Odkazy na živé ukázky doplňte do pole "url" (volitelné).
-   ============================================================ */
 const PROJECTS = [
   {
     title: "Krok ven",
@@ -50,13 +46,9 @@ const PROJECTS = [
   },
 ];
 
-/* ---------- Pomocné funkce ---------- */
 const $ = (sel, root = document) => root.querySelector(sel);
 const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
-/* ============================================================
-   1) Přepínač světlého a tmavého režimu (localStorage)
-   ============================================================ */
 const themeBtn = $(".theme-toggle");
 
 function applyTheme(theme) {
@@ -66,7 +58,7 @@ function applyTheme(theme) {
 
 function initTheme() {
   let saved = null;
-  try { saved = localStorage.getItem("theme"); } catch (e) { /* úložiště nemusí být dostupné */ }
+  try { saved = localStorage.getItem("theme"); } catch (e) {}
   const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   applyTheme(saved || (prefersDark ? "dark" : "light"));
 }
@@ -74,12 +66,9 @@ function initTheme() {
 themeBtn.addEventListener("click", () => {
   const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
   applyTheme(next);
-  try { localStorage.setItem("theme", next); } catch (e) { /* ignorovat */ }
+  try { localStorage.setItem("theme", next); } catch (e) {}
 });
 
-/* ============================================================
-   2) Hamburger menu na mobilu
-   ============================================================ */
 const navToggle = $(".nav-toggle");
 const nav = $("#nav");
 
@@ -93,10 +82,6 @@ navToggle.addEventListener("click", () => setNav(!nav.classList.contains("open")
 nav.addEventListener("click", (e) => { if (e.target.closest("a")) setNav(false); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") setNav(false); });
 
-/* ============================================================
-   3) Zvýraznění aktivní sekce v menu při scrollování
-      (plynulé scrollování zajišťuje CSS scroll-behavior)
-   ============================================================ */
 const links = $$(".nav a");
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
@@ -110,9 +95,6 @@ const observer = new IntersectionObserver((entries) => {
 }, { rootMargin: "-40% 0px -55% 0px" });
 $$("main section[id]").forEach((s) => observer.observe(s));
 
-/* ============================================================
-   4) Demo responzivity – přepínání velikosti náhledu
-   ============================================================ */
 const frame = $("#frame");
 $$(".switch button").forEach((btn) => {
   btn.addEventListener("click", () => {
@@ -121,14 +103,11 @@ $$(".switch button").forEach((btn) => {
   });
 });
 
-/* ============================================================
-   5) Projekty: dynamické vykreslení, filtr a modální okno
-   ============================================================ */
 const cardsEl = $("#cards");
 const filtersEl = $(".filters");
 const modal = $("#modal");
 let activeCategory = "Vše";
-let lastFocus = null; // prvek, který otevřel modal (po zavření se na něj vrátí focus)
+let lastFocus = null;
 
 function renderFilters() {
   const categories = ["Vše", ...new Set(PROJECTS.map((p) => p.category))];
@@ -147,7 +126,6 @@ function renderFilters() {
   });
 }
 
-/* Náhled webu: vlastní obrázek (p.img) nebo automatický snímek služby WordPress mShots */
 const previewSrc = (p) =>
   p.img || `https://s.wordpress.com/mshots/v1/${encodeURIComponent(p.url)}?w=800&h=500`;
 
@@ -173,7 +151,7 @@ function renderCards() {
     const img = $("img", li);
     img.src = previewSrc(p);
     img.alt = "Náhled webu " + p.title;
-    img.addEventListener("error", () => shot.classList.add("no-img")); // záložní vzhled bez obrázku
+    img.addEventListener("error", () => shot.classList.add("no-img"));
     $(".cat", li).textContent = p.category;
     $("h3", li).textContent = p.title;
     $(".sum", li).textContent = p.summary;
@@ -197,7 +175,7 @@ function openModal(p) {
   const link = $("#m-link");
   link.hidden = !p.url;
   if (p.url) link.href = p.url;
-  // doplňkové odkazy (např. e-shop)
+
   $$(".m-extra").forEach((e) => e.remove());
   (p.links || []).forEach((l) => {
     const a = document.createElement("a");
@@ -212,12 +190,9 @@ function openModal(p) {
 
 modal.addEventListener("close", () => lastFocus && lastFocus.focus());
 $(".close", modal).addEventListener("click", () => modal.close());
-// Kliknutí mimo obsah okna ho zavře
+
 modal.addEventListener("click", (e) => { if (e.target === modal) modal.close(); });
 
-/* ============================================================
-   6) Kontaktní formulář s validací
-   ============================================================ */
 const form = $("#form");
 const rules = {
   name: (v) => (v.trim().length >= 2 ? "" : "Napište své jméno (alespoň 2 znaky)."),
@@ -232,7 +207,7 @@ function validateField(input) {
   return !message;
 }
 
-const fields = $$("input[id], textarea", form); // bez skrytého pole proti spamu
+const fields = $$("input[id], textarea", form);
 fields.forEach((input) => {
   input.addEventListener("blur", () => validateField(input));
   input.addEventListener("input", () => { if (input.getAttribute("aria-invalid") === "true") validateField(input); });
@@ -250,8 +225,6 @@ form.addEventListener("submit", (e) => {
   sendForm(ok);
 });
 
-/* Odeslání e-mailu přes FormSubmit (fetch API) – zpráva dorazí na webify@seznam.cz.
-   Služba nepotřebuje vlastní server, takže funguje na GitHub Pages i Netlify. */
 const FORM_ENDPOINT = "https://formsubmit.co/ajax/webify@seznam.cz";
 
 async function sendForm(ok) {
@@ -280,7 +253,6 @@ async function sendForm(ok) {
   }
 }
 
-/* ---------- Start ---------- */
 $("#year").textContent = new Date().getFullYear();
 initTheme();
 renderFilters();

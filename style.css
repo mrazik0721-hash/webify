@@ -1,4 +1,4 @@
-/* ===== Design tokeny ===== */
+
 :root {
   --bg: #edf1ee;
   --card: #f9fbf9;
@@ -24,7 +24,6 @@
   color-scheme: dark;
 }
 
-/* ===== Základ ===== */
 *, *::before, *::after { box-sizing: border-box; }
 html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
 body {
@@ -43,7 +42,6 @@ a { color: inherit; }
 .skip { position: absolute; left: -999px; top: 0; background: var(--accent); color: var(--on-accent); padding: .5rem 1rem; z-index: 100; }
 .skip:focus { left: 0; }
 
-/* ===== Hlavička a navigace ===== */
 .site-header {
   position: sticky; top: 0; z-index: 20;
   display: flex; align-items: center; justify-content: space-between;
@@ -73,12 +71,10 @@ a { color: inherit; }
 .nav-toggle[aria-expanded="true"] span:nth-child(2) { opacity: 0; }
 .nav-toggle[aria-expanded="true"] span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* ===== Sekce ===== */
 .section { padding: clamp(3rem, 8vw, 6rem) var(--pad); max-width: 1200px; margin: 0 auto; }
 .section h2 { margin-bottom: 1rem; }
 .intro { color: var(--muted); }
 
-/* ===== Hero ===== */
 .hero {
   display: grid; grid-template-columns: 1fr 1fr; gap: clamp(2rem, 5vw, 4rem); align-items: center;
   padding: clamp(3rem, 8vw, 6rem) var(--pad); max-width: 1200px; margin: 0 auto;
@@ -95,7 +91,6 @@ a { color: inherit; }
 .btn:hover { transform: translateY(-2px); }
 .btn-ghost { background: transparent; color: var(--ink); border-color: var(--ink); }
 
-/* ===== Demo responzivity ===== */
 .demo { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 1rem; }
 .demo-bar { display: flex; flex-wrap: wrap; gap: .75rem; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
 .demo-bar p { margin: 0; font-weight: 600; }
@@ -120,7 +115,6 @@ a { color: inherit; }
 @container (max-width: 420px) { .mini-grid { grid-template-columns: repeat(2, 1fr); } .mini-hero { height: 56px; } }
 @container (max-width: 220px) { .mini-grid { grid-template-columns: 1fr; } .mini-grid i { height: 36px; } }
 
-/* ===== Projekty ===== */
 .filters { display: flex; flex-wrap: wrap; gap: .5rem; margin: 1.5rem 0; }
 .filters button {
   font: 500 .95rem var(--body); color: var(--ink); background: none;
@@ -145,13 +139,11 @@ a { color: inherit; }
 .btn-sm { font-size: .92rem; padding: .45rem 1rem; border-radius: 8px; }
 .m-extra { margin-left: .25rem; }
 
-/* ===== Dovednosti a O mně ===== */
 .skills { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 2rem; margin-top: 2rem; }
 .skills article { border-top: 3px solid var(--ink); padding-top: 1rem; }
 .skills p { color: var(--muted); margin-top: .5rem; }
 .about { display: grid; grid-template-columns: 1fr 2fr; gap: 2rem; }
 
-/* ===== Formulář ===== */
 form { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.5rem; max-width: 760px; }
 .field { display: flex; flex-direction: column; gap: .35rem; }
 .field.wide, form .btn, .ok { grid-column: 1 / -1; }
@@ -167,7 +159,6 @@ input[aria-invalid="true"], textarea[aria-invalid="true"] { border-color: #c0392
 .ok { color: var(--accent); font-weight: 600; margin: 0; }
 button:disabled { opacity: .6; cursor: wait; }
 
-/* ===== Modal ===== */
 dialog {
   width: min(560px, calc(100% - 2rem)); background: var(--card); color: var(--ink);
   border: 1px solid var(--line); border-radius: var(--radius); padding: 2rem;
@@ -180,11 +171,9 @@ dialog[open] { animation: pop .2s ease-out; }
 dialog ul { padding-left: 1.2rem; margin: 0 0 1.25rem; }
 dialog[open] { max-height: calc(100dvh - 2rem); overflow: auto; }
 
-/* ===== Patička ===== */
 .site-footer { display: flex; justify-content: space-between; padding: 2rem var(--pad); border-top: 1px solid var(--line); color: var(--muted); }
 .site-footer p { margin: 0; }
 
-/* ===== Responzivita ===== */
 @media (max-width: 900px) {
   .hero { grid-template-columns: 1fr; }
   .about { grid-template-columns: 1fr; }
@@ -204,7 +193,6 @@ dialog[open] { max-height: calc(100dvh - 2rem); overflow: auto; }
   *, *::before, *::after { transition: none !important; animation: none !important; }
 }
 
-/* ===== Hero v2: tmavý pás v barvách loga ===== */
 :root { --grad: linear-gradient(135deg, #2b9bff, #4b4de0); }
 .btn { background: var(--grad); border-color: transparent; color: #fff; }
 .btn-ghost { background: transparent; border: 2px solid var(--ink); color: var(--ink); }
@@ -213,9 +201,9 @@ dialog[open] { max-height: calc(100dvh - 2rem); overflow: auto; }
   border-bottom: 1px solid var(--line);
 }
 :root[data-theme="dark"] .hero-wrap { --bg: #0a0a0c; --card: #121318; --line: #262a36; --accent: #4f9dff; }
-.hero-wrap::after { /* velké W jako vodoznak */
+.hero-wrap::after {
   content: ""; position: absolute; right: -6%; bottom: -12%; width: min(620px, 70vw); aspect-ratio: 1.48;
-  background: url("img/mark-on-light.png") center / contain no-repeat; opacity: .07; pointer-events: none;
+  background: url("mark-on-light.png") center / contain no-repeat; opacity: .07; pointer-events: none;
 }
 .hero { position: relative; z-index: 1; min-height: min(86vh, 760px); }
 .hero-mark { display: block; width: clamp(84px, 9vw, 120px); height: auto; margin-bottom: 1.75rem; animation: logo-in .8s cubic-bezier(.2,.8,.2,1) both; }
@@ -229,15 +217,14 @@ dialog[open] { max-height: calc(100dvh - 2rem); overflow: auto; }
 .mini-bar span { margin-left: 8px; flex: 1; font-size: 10px; line-height: 1; padding: 5px 8px; border-radius: 99px; background: var(--bg); color: var(--muted); }
 .hero .mini-hero {
   height: 90px; border-radius: 8px;
-  background: url("img/mark-on-dark.png") 50% 50% / auto 62% no-repeat, linear-gradient(135deg, #2b9bff, #4b4de0);
+  background: url("mark-on-dark.png") 50% 50% / auto 62% no-repeat, linear-gradient(135deg, #2b9bff, #4b4de0);
 }
 @container (max-width: 420px) { .hero .mini-hero { height: 64px; } }
 @container (max-width: 220px) { .mini-bar span { display: none; } }
 @media (prefers-reduced-motion: reduce) { .hero-mark { animation: none; } }
 
-/* ===== Sekce ve stylu loga ===== */
 .section h2 { padding: 0; border: 0; }
-.band { /* černý pás přes celou šířku, jako pozadí loga */
+.band {
   --ink: #f2f5fb; --muted: #a9b3c6; --card: #121318; --line: #262a36; --accent: #4f9dff;
   background: #0a0a0c; color: var(--ink);
   box-shadow: 0 0 0 100vmax #0a0a0c; clip-path: inset(0 -100vmax);
@@ -255,9 +242,8 @@ form { background: var(--card); border: 1px solid var(--line); border-radius: va
 :root[data-theme="dark"] .foot-mark-dark { display: inline; }
 :root[data-theme="dark"] .foot-mark:not(.foot-mark-dark) { display: none; }
 
-/* Dvě verze znaku podle motivu */
 .hero-mark-dark, .about-mark-dark { display: none; }
 :root[data-theme="dark"] .hero-mark-dark, :root[data-theme="dark"] .about-mark-dark { display: block; }
 :root[data-theme="dark"] .hero-mark:not(.hero-mark-dark), :root[data-theme="dark"] .about-mark:not(.about-mark-dark) { display: none; }
-:root[data-theme="dark"] .hero-wrap::after { background-image: url("img/mark-on-dark.png"); opacity: .09; }
+:root[data-theme="dark"] .hero-wrap::after { background-image: url("mark-on-dark.png"); opacity: .09; }
 .trap { position: absolute; left: -9999px; height: 0; overflow: hidden; }
